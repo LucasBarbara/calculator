@@ -1,0 +1,19 @@
+.container {
+
+  display: grid;
+  height: 60vh;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  margin: 20vh auto;
+  width: 40vw;
+}
+
+#input {
+
+  grid-column: 1 /span 4;
+}
+
+#zero {
+
+  grid-column: 1 / span 2;
+}
