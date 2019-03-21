@@ -1,4 +1,4 @@
-let displayValue = '';
+let historyValue = '';
 let value = '';
 
 function add(x, y) {
@@ -30,7 +30,6 @@ function operate(operator, x, y) {
   if (operator == 'mul') result = multiply(x, y);
   if (operator == 'div') result = divide(x, y);
   
-  let tmpResult = result;
   return result;
 } 
 
@@ -40,23 +39,15 @@ buttons.forEach((button) => {
 
   button.addEventListener('click', (e) => {
 
-    displayValue += button.innerHTML;
+    historyValue += button.innerHTML;
     
     value = button.id;
     
-    history(displayValue);
-
-    /* let operator; */
+    history(historyValue);
 
     let type = button.className;
 
-    operand(value, type);
-
-    // if (button.className == 'operator') {
-    //     operator = button.id;
-    //     operation(value, operator);
-    //     value = '';
-    // }
+    calculate(value, type);
   });
   
 });
@@ -64,43 +55,67 @@ buttons.forEach((button) => {
 // function that adds the pressed buttons values to the display
 function history() {
 
-  const input = document.querySelector('#input');
+  const input = document.querySelector('#input-hist');
+  const history = document.createElement('p');
+  input.innerHTML = '';
+  history.classList.add('history');
+  history.innerHTML = historyValue;
+  input.appendChild(history);
+}
+
+// function that adds the current button to the display
+function display(value) {
+
+  const input = document.querySelector('#input-disp');
   const display = document.createElement('p');
   input.innerHTML = '';
   display.classList.add('display');
-  display.innerHTML = displayValue;
+  display.innerHTML = value;
   input.appendChild(display);
 }
 
-let currentValue = 0;
+
+let firstValue = 0;
+let currentOperator = '';
+let operator;
 let previousValue;
 let counter = 0;
 
-let operand = function(value, type) {
-  
-  let operator;
+//function that performs the calculations depending on the type of the pressed button
+let calculate = function(value, type) {
+
+  const firstPress = document.querySelector('#input');
   
   if (type == 'operand') {
-
-    currentValue = parseFloat(value);
+    
+    firstValue += value;
+    
+    if (!firstPress.classList.contains('check')) {
+    display(firstValue.slice(1));
+    }
   }
 
   if (type == 'operator') {
 
-    counter++;
-    operator = value;
-    alert(operator);
-    previousValue = currentValue;
+    if (!firstPress.classList.contains('check')) {
 
+      firstPress.classList.add('check');
+      previousValue = firstValue;
+      currentOperator = value;
+      firstValue = '';
 
-    if (counter > 1) {
+    } else if (firstPress.classList.contains('check')) {
 
-      alert(operate(operator, previousValue, currentValue)); 
+      operator = currentOperator;
+      currentOperator = value;
+      previousValue = operate(operator, parseFloat(previousValue), parseFloat(firstValue));
+      display(previousValue);
+      firstValue = '';
     }
+    
   }
 
-  // alert(currentValue);
-  // alert(previousValue);
-  // alert(counter);
-  
+  // if ()
 }
+
+display(firstValue);
