@@ -2,18 +2,19 @@
 
   display: grid;
   height: 60vh;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   margin: 20vh auto;
   width: 40vw;
 }
 
 #input {
 
+  border: 1px solid gray;
   grid-column: 1 /span 4;
 }
 
-#zero {
+.zero {
 
   grid-column: 1 / span 2;
 }
