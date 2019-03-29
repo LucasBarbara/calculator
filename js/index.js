@@ -1,4 +1,3 @@
-let historyValue = '';
 let value = '';
 
 /* Basic math functions */
@@ -43,12 +42,8 @@ const buttons = document.querySelectorAll('button');
 buttons.forEach((button) => {
 
   button.addEventListener('click', (e) => {
-
-    historyValue += button.innerHTML;
     
     value = button.id;
-    
-    history(historyValue);
 
     let type = button.className;
 
@@ -56,17 +51,6 @@ buttons.forEach((button) => {
   });
   
 });
-
-// function that adds the pressed buttons values to the display
-function history() {
-
-  const input = document.querySelector('#input-hist');
-  const history = document.createElement('p');
-  input.innerHTML = '';
-  history.classList.add('history');
-  history.innerHTML = historyValue;
-  input.appendChild(history);
-}
 
 // function that adds the current button to the display
 
@@ -146,10 +130,9 @@ let calculate = function(value, type) {
     } else {
     
       if (firstValue == '') { alert('bang'); /* insert clear function here */ }
+
       operator = currentOperator;
       currentOperator = value;
-      alert(previousValue);
-      alert(firstValue);
       previousValue = operate(operator, parseFloat(previousValue), parseFloat(firstValue));
       firstPress.classList.remove('check');
       display(previousValue);
@@ -159,3 +142,12 @@ let calculate = function(value, type) {
 }
 
 display(firstValue);
+
+
+// Next: Add a clear function
+// fix pressing 2 operators in sequence
+// round decimals
+// check if user input . more than once (disable the decimal button if there’s already one in the display)
+// Message if user tries to divide by 0
+// Add a backspace button
+// Add keyboard support
