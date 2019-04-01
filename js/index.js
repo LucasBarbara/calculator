@@ -1,4 +1,5 @@
-let value = '';
+
+  
 
 /* Basic math functions */
 
@@ -28,10 +29,10 @@ function operate(operator, x, y) {
 
   let result;
 
-  if (operator == 'add') result = add(x, y);
-  if (operator == 'sub') result = subtract(x, y);
-  if (operator == 'mul') result = multiply(x, y);
-  if (operator == 'div') result = divide(x, y);
+  if (operator == 'add') result = add(parseFloat(x), parseFloat(y));
+  if (operator == 'sub') result = subtract(parseFloat(x), parseFloat(y));
+  if (operator == 'mul') result = multiply(parseFloat(x), parseFloat(y));
+  if (operator == 'div') result = divide(parseFloat(x), parseFloat(y));
   
   return result;
 } 
@@ -42,110 +43,108 @@ const buttons = document.querySelectorAll('button');
 buttons.forEach((button) => {
 
   button.addEventListener('click', (e) => {
-    
-    value = button.id;
 
+    let value = button.id;
     let type = button.className;
 
+
     calculate(value, type);
+
   });
   
 });
 
-// function that adds the current button to the display
-
-function display(value) {
-
-  const input = document.querySelector('#input-disp');
-  const display = document.createElement('p');
-  input.innerHTML = '';
-  display.classList.add('display');
-  display.innerHTML = value;
-  input.appendChild(display);
-}
-
-
-let firstValue = 0;
-let currentOperator = '';
-let operator;
-let previousValue;
-let counter = 0;
+let display = document.querySelector('#input-disp');
+let firstNumber;
+let currentOperator;
+let keysPressed = document.querySelector('#buttons');
+let lastKeyPressed = keysPressed.classList;
 
 /* function that calls the operate() depending on the type of the pressed button and updates the display */
-
 let calculate = function(value, type) {
 
-  const firstPress = document.querySelector('#input');
-  
-  if (type == 'operand') {
+  let displayNumber = display.textContent;
+  let inputInfo = document.querySelector('#input');
+  let operatorPressed = inputInfo.classList;
+ 
+  // if a number is pressed
+  if (type.includes('operand')) {
     
-    firstValue += value;
     
-    if (!firstPress.classList.contains('check')) {
-    display(firstValue.slice(1));
-    } else {
+    //replace display number with pressed number when display number is zero or an operator was pressed immediately before. remove pressed class from #input div
+    if (displayNumber == 0 || operatorPressed.contains('check')) {
 
-      display(firstValue);
+      display.textContent = value;
+      operatorPressed.remove('check');
+
+    // if not, append pressed number to display number
+    } else if (displayNumber != 0) {
+
+      display.textContent += value;
+      displayNumber = display.textContent;
     }
-  }
 
-  
+    lastKeyPressed.value = '';
+    lastKeyPressed.add('operand');
+  }
+    
+  // an operator is pressed
   if (type == 'operator') {
 
-    // If it's the first operator pressed
-    if (!firstPress.classList.contains('check')) {
-
-      firstPress.classList.add('check');
-      previousValue = firstValue;
-      currentOperator = value;
-      firstValue = '';
-
-    // If there was an operator previously pressed use that one to do the math and display the result
-    } else if (firstPress.classList.contains('check')) {
-
-      operator = currentOperator;
-      currentOperator = value;
-      previousValue = operate(operator, parseFloat(previousValue), parseFloat(firstValue));
-      display(previousValue);
-      firstValue = '';
-    }
+    // add check class to operatorPressed
+    operatorPressed.add('check');
     
+
+    // if it's the first operator pressed, add pressed class to operatorPressed, store the displayNumber as the firstNumber and record the current operator
+    if (!operatorPressed.contains('pressed')) {
+
+      operatorPressed.add('pressed');
+      firstNumber = displayNumber;
+      currentOperator = value;
+
+    // else, record previous operator and current one and perform the pending operation
+    } else if (operatorPressed.contains('pressed')) {
+
+      // if an operator is pressed multiple times, no calculation should occur but the operator should be updated (Not DRY)
+      if (lastKeyPressed.contains('operator')) {
+
+        previousOperator = currentOperator;
+        currentOperator = value;
+
+      // if an operator is pressed a second time, update the operator value and perform calculation
+      } else if (!lastKeyPressed.contains('operator')) {
+
+        previousOperator = currentOperator;
+        currentOperator = value;
+        display.textContent = operate(previousOperator, firstNumber, displayNumber);
+        firstNumber = display.textContent;
+      }
+      
+    }
+
+    lastKeyPressed.value = '';
+    lastKeyPressed.add('operator');
+  }
+
+  // if the decimal key is pressed, append decimal to display
+  if (type == 'decimal' && !displayNumber.includes('.')) {
+
+    display.textContent += value;
   }
 
   if (type == 'equal-sign') {
 
-    // If the equal-sign was pressed before any other operator
-    if (!firstPress.classList.contains('check')) {
-    
-      if (firstValue != 0) {
-        
-        display(firstValue.slice(1));
-
-      } else {
-
-        display(firstValue);
-      }
-
-    // if there was an operator previously pressed
-    } else {
-    
-      if (firstValue == '') { alert('bang'); /* insert clear function here */ }
-
-      operator = currentOperator;
-      currentOperator = value;
-      previousValue = operate(operator, parseFloat(previousValue), parseFloat(firstValue));
-      firstPress.classList.remove('check');
-      display(previousValue);
-      firstValue = previousValue;
+    // equals should only operate if an operator has been pressed
+    if (currentOperator != undefined) {
+      
+      display.textContent = operate(currentOperator, firstNumber, displayNumber);
     }
   }
 }
 
-display(firstValue);
 
 
 // Next: Add a clear function
-// fix pressing 2 operators in sequence
 // round decimals
 // check if user input . more than once (disable the decimal button if there’s already one in the display)
 // Message if user tries to divide by 0
