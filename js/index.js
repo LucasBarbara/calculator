@@ -68,6 +68,7 @@ let lastKeyPressed = keysPressed.classList;
 let inputInfo = document.querySelector('#input');
 let operatorPressed = inputInfo.classList;
 let tempNumber;
+let previousOperator;
 
 /* function that calls the operate() depending on the type of the pressed button and updates the display */
 let calculate = function(value, type) {
@@ -77,6 +78,8 @@ let calculate = function(value, type) {
  
   // if a number is pressed
   if (type.includes('operand')) {
+
+    console.log(firstNumber, previousOperator, displayNumber, currentOperator);
     
     //replace display number with pressed number when display number is zero or an operator was pressed immediately before. remove pressed class from #input div
     if (displayNumber == '0' || operatorPressed.contains('check') || lastKeyPressed.contains('equal')) {
@@ -125,11 +128,19 @@ let calculate = function(value, type) {
 
         previousOperator = currentOperator;
         currentOperator = value;
-        display.textContent = operate(previousOperator, firstNumber, displayNumber);
-        firstNumber = display.textContent;
+
+        // Message if user tries to divide by zero
+        if (previousOperator == 'div' && displayNumber == '0') {
+
+          display.textContent= 'Division by zero is not possible. Please press AC.';
+        } else {
+
+          display.textContent = operate(previousOperator, firstNumber, displayNumber);
+          firstNumber = display.textContent;
+        }
       }
+
       displayNumber = '';
-      
     }
 
     lastKeyPressed.value = '';
@@ -154,9 +165,9 @@ let calculate = function(value, type) {
   
   if (type == 'equal-sign') {
 
+    console.log(currentOperator, displayNumber, lastKeyPressed);
     // equals should only operate if an operator has been pressed
     if (currentOperator != undefined) {
-      
       
       // When the user presses the equal key after a calculation was done, the calculator carries on that last calculation with updated values
       if (lastKeyPressed.contains('equal')) {
@@ -165,15 +176,20 @@ let calculate = function(value, type) {
         firstNumber = display.textContent;
       } else if (!lastKeyPressed.contains('clear')) {
 
-        console.log(firstNumber, currentOperator, displayNumber);
-
         lastKeyPressed.value = '';
         lastKeyPressed.add('equal');
         operatorPressed.remove('pressed');
         tempNumber = displayNumber;
 
-        display.textContent = operate(currentOperator, firstNumber, displayNumber);
-        firstNumber = display.textContent;
+         // Message if user tries to divide by zero
+         if (currentOperator == 'div' && displayNumber == '0') {
+
+          display.textContent= 'Division by zero is not possible. Please press AC.';
+        } else {
+
+          display.textContent = operate(currentOperator, firstNumber, displayNumber);
+          firstNumber = display.textContent;
+        }
 
         displayNumber = '';
         previousOperator = '';
@@ -196,7 +212,5 @@ let calculate = function(value, type) {
 }
 
 
-// round decimals
-// Message if user tries to divide by 0
 // Add a backspace button
 // Add keyboard support
