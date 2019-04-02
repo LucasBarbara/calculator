@@ -59,26 +59,28 @@ let firstNumber;
 let currentOperator;
 let keysPressed = document.querySelector('#buttons');
 let lastKeyPressed = keysPressed.classList;
+let inputInfo = document.querySelector('#input');
+let operatorPressed = inputInfo.classList;
+let tempNumber;
 
 /* function that calls the operate() depending on the type of the pressed button and updates the display */
 let calculate = function(value, type) {
 
   let displayNumber = display.textContent;
-  let inputInfo = document.querySelector('#input');
-  let operatorPressed = inputInfo.classList;
+  
  
   // if a number is pressed
   if (type.includes('operand')) {
     
-    
     //replace display number with pressed number when display number is zero or an operator was pressed immediately before. remove pressed class from #input div
-    if (displayNumber == 0 || operatorPressed.contains('check')) {
+    if (displayNumber == '0' || operatorPressed.contains('check') || lastKeyPressed.contains('equal')) {
 
+      
       display.textContent = value;
       operatorPressed.remove('check');
 
     // if not, append pressed number to display number
-    } else if (displayNumber != 0) {
+    } else if (displayNumber !== '0') {
 
       display.textContent += value;
       displayNumber = display.textContent;
@@ -96,8 +98,9 @@ let calculate = function(value, type) {
     
 
     // if it's the first operator pressed, add pressed class to operatorPressed, store the displayNumber as the firstNumber and record the current operator
-    if (!operatorPressed.contains('pressed')) {
+    if (!operatorPressed.contains('pressed') || lastKeyPressed.contains('equal')) {
 
+      
       operatorPressed.add('pressed');
       firstNumber = displayNumber;
       currentOperator = value;
@@ -119,6 +122,7 @@ let calculate = function(value, type) {
         display.textContent = operate(previousOperator, firstNumber, displayNumber);
         firstNumber = display.textContent;
       }
+      displayNumber = '';
       
     }
 
@@ -126,19 +130,62 @@ let calculate = function(value, type) {
     lastKeyPressed.add('operator');
   }
 
-  // if the decimal key is pressed, append decimal to display
-  if (type == 'decimal' && !displayNumber.includes('.')) {
+  // if the decimal key is pressed, append decimal to display only if it was not pressed before for the current value
+  if (type == 'decimal' && !displayNumber.includes('.') && !lastKeyPressed.contains('operator') && !lastKeyPressed.contains('equal')) {
 
+  
     display.textContent += value;
+
+  // replace display value with '0.' if an operator or the equals sign were pressed
+  } else if (type == 'decimal' && (lastKeyPressed.contains('operator') || lastKeyPressed.contains('equal'))) {
+
+    
+    display.textContent = '0' + value;
+    operatorPressed.remove('check');
+    displayNumber = display.textContent;
   }
 
+  
   if (type == 'equal-sign') {
 
     // equals should only operate if an operator has been pressed
     if (currentOperator != undefined) {
       
-      display.textContent = operate(currentOperator, firstNumber, displayNumber);
+      
+      // When the user presses the equal key after a calculation was done, the calculator carries on that last calculation with updated values
+      if (lastKeyPressed.contains('equal')) {
+      
+        display.textContent = operate(currentOperator, firstNumber, tempNumber);
+        firstNumber = display.textContent;
+      } else if (!lastKeyPressed.contains('clear')) {
+
+        console.log(firstNumber, currentOperator, displayNumber);
+
+        lastKeyPressed.value = '';
+        lastKeyPressed.add('equal');
+        operatorPressed.remove('pressed');
+        tempNumber = displayNumber;
+
+        display.textContent = operate(currentOperator, firstNumber, displayNumber);
+        firstNumber = display.textContent;
+
+        displayNumber = '';
+        previousOperator = '';
+      }
     }
+  }
+
+  // All data is wiped out on clear key press
+  if (type == 'clear') {
+
+    lastKeyPressed.value = '';
+    lastKeyPressed.add('clear');
+    displayNumber = '';
+    firstNumber = '';
+    tempNumber = '';
+    previousOperator = '';
+    currentOperator = '';
+    display.textContent = '0';
   }
 }
 
@@ -146,7 +193,6 @@ let calculate = function(value, type) {
 
 // Next: Add a clear function
 // round decimals
-// check if user input . more than once (disable the decimal button if there’s already one in the display)
 // Message if user tries to divide by 0
 // Add a backspace button
 // Add keyboard support
