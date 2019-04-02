@@ -23,6 +23,11 @@ function divide(x, y) {
   return x / y;
 }
 
+function round(value, decimals) {
+
+  return Number(Math.round(value +'e' + decimals) +'e-' + decimals); 
+}
+
 /* Function that calls the math functions depending on the numbers and operators passed by the user */
 
 function operate(operator, x, y) {
@@ -34,6 +39,7 @@ function operate(operator, x, y) {
   if (operator == 'mul') result = multiply(parseFloat(x), parseFloat(y));
   if (operator == 'div') result = divide(parseFloat(x), parseFloat(y));
   
+  result = round(result, 2);
   return result;
 } 
 
@@ -190,8 +196,6 @@ let calculate = function(value, type) {
 }
 
 
-
-// Next: Add a clear function
 // round decimals
 // Message if user tries to divide by 0
 // Add a backspace button
