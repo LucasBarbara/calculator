@@ -1,6 +1,3 @@
-
-  
-
 /* Basic math functions */
 
 function add(x, y) {
@@ -34,10 +31,10 @@ function operate(operator, x, y) {
 
   let result;
 
-  if (operator == 'add') result = add(parseFloat(x), parseFloat(y));
-  if (operator == 'sub') result = subtract(parseFloat(x), parseFloat(y));
-  if (operator == 'mul') result = multiply(parseFloat(x), parseFloat(y));
-  if (operator == 'div') result = divide(parseFloat(x), parseFloat(y));
+  if (operator == '+') result = add(parseFloat(x), parseFloat(y));
+  if (operator == '-') result = subtract(parseFloat(x), parseFloat(y));
+  if (operator == '*') result = multiply(parseFloat(x), parseFloat(y));
+  if (operator == '/') result = divide(parseFloat(x), parseFloat(y));
   
   result = round(result, 2);
   return result;
@@ -53,11 +50,42 @@ buttons.forEach((button) => {
     let value = button.id;
     let type = button.className;
 
-
     calculate(value, type);
 
   });
   
+});
+
+// Add keyboard support
+document.addEventListener('keydown', (e) =>{
+
+  const isNumber = /^[0-9]$/i.test(e.key);
+  let value = '';
+  let type = '';
+
+  if (isNumber) {
+
+    value = e.key;
+    type = 'operand';
+  } else if (e.key == '/' || e.key == '*' || e.key == '-' || e.key == '+') {
+
+    value = e.key;
+    type = 'operator';
+  } else if (e.key == 'Backspace') {
+
+    value = 'backspace';
+    type = 'backspace';
+
+  } else if (e.key == 'Enter') {
+    
+    value = 'equal';
+    type = 'equal-sign';
+  } else if (e.key == '.') {
+
+    value = e.key;
+    type = 'decimal';
+  }
+  calculate(value, type);
 });
 
 let display = document.querySelector('#input-disp');
@@ -162,8 +190,7 @@ let calculate = function(value, type) {
 
   
   if (type == 'equal-sign') {
-
-    console.log(currentOperator, displayNumber, lastKeyPressed);
+    console.log(firstNumber, currentOperator, displayNumber);
     // equals should only operate if an operator has been pressed
     if (currentOperator != undefined) {
       
@@ -172,6 +199,7 @@ let calculate = function(value, type) {
       
         display.textContent = operate(currentOperator, firstNumber, tempNumber);
         firstNumber = display.textContent;
+        console.log(firstNumber, currentOperator, displayNumber);
       } else if (!lastKeyPressed.contains('clear')) {
 
         lastKeyPressed.value = '';
@@ -222,10 +250,22 @@ let calculate = function(value, type) {
       }
       
       displayNumber = display.textContent;
-      console.log(displayNumber, displayNumber.length);
+    }
+  }
+
+  if (type == 'signal') {
+
+    if (lastKeyPressed == 'operand' || lastKeyPressed == 'equal') {
+
+      if (!displayNumber.includes('-')) {
+
+        display.textContent = '-' + displayNumber;
+      } else {
+
+        display.textContent = displayNumber.slice(1);
+      }
+
+      displayNumber = display.textContent;
     }
   }
 }
-
-
-// Add keyboard support
