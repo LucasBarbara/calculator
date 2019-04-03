@@ -53,10 +53,9 @@ buttons.forEach((button) => {
     calculate(value, type);
 
   });
-  
 });
 
-// Add keyboard support
+// Event listener for the keyboard
 document.addEventListener('keydown', (e) =>{
 
   const isNumber = /^[0-9]$/i.test(e.key);
@@ -76,8 +75,15 @@ document.addEventListener('keydown', (e) =>{
     value = 'backspace';
     type = 'backspace';
 
+  
   } else if (e.key == 'Enter') {
     
+    // Remove focus form buttons if user first presses a button and then switches to keyboard
+    buttons.forEach((button) => {
+
+      button.blur();
+    });
+
     value = 'equal';
     type = 'equal-sign';
   } else if (e.key == '.') {
