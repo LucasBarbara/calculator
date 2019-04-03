@@ -78,8 +78,6 @@ let calculate = function(value, type) {
  
   // if a number is pressed
   if (type.includes('operand')) {
-
-    console.log(firstNumber, previousOperator, displayNumber, currentOperator);
     
     //replace display number with pressed number when display number is zero or an operator was pressed immediately before. remove pressed class from #input div
     if (displayNumber == '0' || operatorPressed.contains('check') || lastKeyPressed.contains('equal')) {
@@ -209,8 +207,25 @@ let calculate = function(value, type) {
     currentOperator = '';
     display.textContent = '0';
   }
+
+  // Backspace button after operand or equal key are used
+  if (type == 'backspace') {
+
+    if (lastKeyPressed.contains('operand') || lastKeyPressed.contains('equal')) {
+      
+      if (displayNumber.length < 2) {
+
+        display.textContent = '0';
+      } else {
+
+        display.textContent = displayNumber.substring(0, displayNumber.length - 1);
+      }
+      
+      displayNumber = display.textContent;
+      console.log(displayNumber, displayNumber.length);
+    }
+  }
 }
 
 
-// Add a backspace button
 // Add keyboard support
