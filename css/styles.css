@@ -8,7 +8,7 @@ button {
   background-color: #fff;
   border: 1px solid #000;
   font-family: 'Niramit', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   margin: 1px;
 }
 
@@ -30,7 +30,7 @@ button:active {
   min-height: 60.4vh;
   margin: 20vh auto;
   transition: 0.3s;
-  max-width: 270px;
+  max-width: 350px;
 }
 
 .container:hover {
