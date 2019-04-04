@@ -129,6 +129,8 @@ let calculate = function(value, type) {
     display.textContent = '0' + value;
     operatorPressed.remove('check');
     displayNumber = display.textContent;
+    lastKeyPressed.value = '';
+    lastKeyPressed.add('decimal');
   }
 
   // if the eauals sign is pressed, it should only operate if an operator was used previously
