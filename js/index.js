@@ -35,7 +35,7 @@ function round(value, decimals) {
   return Number(Math.round(value +'e' + decimals) + 'e-' + decimals); 
 }
 
-/* Function that calls the math functions depending on the numbers and operators passed by the user */
+/* function that calls the math functions depending on the numbers and operators passed by the user */
 
 function operate(operator, x, y) {
 
@@ -193,7 +193,6 @@ let calculate = function(value, type) {
       displayNumber = display.textContent;
     }
   }
-
 
   // user presses the positive/negative signal key
   if (type == 'signal') {
