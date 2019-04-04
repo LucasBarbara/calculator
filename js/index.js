@@ -61,14 +61,12 @@ let calculate = function(value, type) {
     //replace display number with pressed number when display number is zero or an operator/equal key was pressed immediately before
     if (displayNumber == '0' || operatorPressed.contains('check') || lastKeyPressed.contains('equal')) {
       
-      console.log(displayNumber, operatorPressed, lastKeyPressed);
       display.textContent = value;
       operatorPressed.remove('check');
 
     // if not, append pressed number to display number
     } else if (displayNumber !== '0') {
 
-      console.log(displayNumber);
       display.textContent += value;
       displayNumber = display.textContent;
     }
@@ -132,7 +130,6 @@ let calculate = function(value, type) {
     displayNumber = display.textContent;
     lastKeyPressed.value = '';
     lastKeyPressed.add('decimal');
-    console.log(displayNumber);
   }
 
   // if the eauals sign is pressed, it should only operate if an operator was used previously
